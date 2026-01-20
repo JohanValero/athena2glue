@@ -2,7 +2,6 @@
 Nodo para generar código PySpark final.
 """
 
-from email.encoders import encode_noop
 import logging
 from typing import List
 

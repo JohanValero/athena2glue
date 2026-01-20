@@ -5,7 +5,7 @@ Nodo para convertir sintaxis Athena SQL a Spark SQL.
 import logging
 from typing import Dict, List, Optional, Tuple
 
-import textwrap
+#import textwrap
 import sqlglot
 from sqlglot import exp
 

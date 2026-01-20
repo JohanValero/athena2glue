@@ -8,7 +8,6 @@ from typing import List
 import sqlglot
 from sqlglot import exp
 
-from ..models.table_info import TableSourceInfo
 from ..models.cte_info import CTESourceInfo
 from ..models.agent_state import AgentState
 from ..nodes.extract_tables_node import extract_tables_ast
@@ -17,7 +16,7 @@ from ..utils.logging_config import setup_logger
 logger: logging.Logger = setup_logger(__name__)
 
 
-def extract_ctes_ast(sql_text: str, tables: List[TableSourceInfo]) -> List[CTESourceInfo]:
+def extract_ctes_ast(sql_text: str) -> List[CTESourceInfo]:
     """
     Parsea el SQL y extrae las definiciones de CTEs, su contenido y orden.
 
@@ -59,10 +58,9 @@ def extract_ctes_node(state: AgentState) -> AgentState:
         Estado actualizado con ctes_extracted
     """
     cleaned_sql: str = state.get("cleaned_sql") # pyright: ignore[reportAssignmentType]
-    tables: List[TableSourceInfo] = state.get("tables") # pyright: ignore[reportAssignmentType]
     logger.info("Iniciando extracción de CTEs...")
 
-    ctes_found: List[CTESourceInfo] = extract_ctes_ast(cleaned_sql, tables)
+    ctes_found: List[CTESourceInfo] = extract_ctes_ast(cleaned_sql)
     logger.info("CTEs detectadas: %s", len(ctes_found))
 
     for cte in ctes_found:

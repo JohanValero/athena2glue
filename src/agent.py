@@ -37,12 +37,12 @@ def main(sql_path: Path, business_name: str, output_dir: str) -> None:
         Exception: Si ocurre un error inesperado durante la ejecución.
     """
     logger.info("Iniciando Agente de Migración Athena2Glue")
-    logger.info(f"SQL Input: {sql_path}")
-    logger.info(f"Negocio: {business_name}")
-    logger.info(f"Output: {output_dir}")
+    logger.info("SQL Input: %s", sql_path)
+    logger.info("Negocio: %s", business_name)
+    logger.info("Output: %s", output_dir)
 
     if not sql_path.exists():
-        logger.error(f"El archivo SQL no existe: {sql_path}")
+        logger.error("El archivo SQL no existe: %s", sql_path)
         raise FileNotFoundError(f"Archivo no encontrado: {sql_path}")
 
     # Asegurar que el directorio de salida existe
@@ -55,14 +55,14 @@ def main(sql_path: Path, business_name: str, output_dir: str) -> None:
             output_dir=output_dir
         )
         graph = create_agent_graph()
-        
+
         # Ejecución del grafo
         final_state = graph.invoke(initial_state)
-        
+
         logger.info("Agente ejecutado exitosamente.")
-        
+
     except Exception as e:
-        logger.error(f"Error durante la ejecución del agente: {e}")
+        logger.error("Error durante la ejecución del agente: %s", e)
         logger.debug(traceback.format_exc())
         raise
 
@@ -70,33 +70,33 @@ def main(sql_path: Path, business_name: str, output_dir: str) -> None:
 def cli() -> None:
     """
     Punto de entrada para la Línea de Comandos (CLI).
-    
+
     Parsea argumentos y llama a la función main.
     """
     parser = argparse.ArgumentParser(
         description="Agente de migración de consultas Athena (SQL) a PySpark (AWS Glue)."
     )
-    
+
     parser.add_argument(
         "sql_file",
         type=str,
         help="Ruta al archivo SQL de entrada que se desea migrar."
     )
-    
+
     parser.add_argument(
         "--business-name",
         type=str,
         required=True,
         help="Nombre del negocio o identificador para nombrar el script generado (ej: FRN, VTA, etc)."
     )
-    
+
     parser.add_argument(
         "--output-dir",
         type=str,
         default="./output",
         help="Directorio donde se guardará el script Python generado. Default: ./output"
     )
-    
+
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",

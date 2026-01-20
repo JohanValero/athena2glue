@@ -1,3 +1,7 @@
+"""
+Configuración centralizada de logging para el agente.
+"""
+
 import logging
 import sys
 

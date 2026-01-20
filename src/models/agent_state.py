@@ -4,9 +4,7 @@ Estado del agente LangGraph durante el flujo de migración.
 
 
 from typing import Dict, List, TypedDict
-
 from src.models.table_info import TableSourceInfo
-
 from ..models.cte_info import CTESourceInfo
 
 
