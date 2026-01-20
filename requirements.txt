@@ -1,0 +1,8 @@
+sqlglot
+langgraph
+jinja2
+pydantic
+pytest
+python-dotenv
+sqlparse
+openai
