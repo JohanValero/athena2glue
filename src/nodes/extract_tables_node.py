@@ -23,12 +23,13 @@ TABLE_CONFIG: Dict = {
 
 def extract_tables_ast(sql_text: str) -> List[TableSourceInfo]:
     """
-    Docstring for extract_tables_ast
-    
-    :param sql_text: Description
-    :type sql_text: str
-    :return: Description
-    :rtype: List[str]
+    Extrae información de las tablas desde el texto SQL usando sqlglot.
+
+    Args:
+        sql_text (str): Texto SQL a analizar.
+
+    Returns:
+        List[TableSourceInfo]: Lista de objetos TableSourceInfo con la información de las tablas.
     """
     tables: List[TableSourceInfo] = []
     parsed: sqlglot.Expression = sqlglot.parse_one(sql_text)

@@ -15,16 +15,16 @@ logger: logging.Logger = setup_logger(__name__)
 def parse_sql_node(state: AgentState) -> AgentState:
     """
     Lee y parsea el archivo SQL de entrada.
-    
+
     Acciones:
     - Lee archivo desde state['sql_file_path']
     - Limpia comentarios y normaliza espacios
     - Crea SQLMetadata inicial
     - Actualiza logs
-    
+
     Args:
         state: Estado actual del agente
-        
+
     Returns:
         Estado actualizado con raw_sql y cleaned_sql
     """

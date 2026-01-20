@@ -3,14 +3,14 @@ import sys
 
 def setup_logger(name: str = "Athena2Glue", level: int = logging.INFO) -> logging.Logger:
     """
-    Configures and returns a logger with the specified name and level.
+    Configura y devuelve un logger con el nombre y nivel especificados.
 
     Args:
-        name (str): The name of the logger.
-        level (int): The logging level (default: logging.INFO).
+        name (str): El nombre del logger.
+        level (int): El nivel de logging (por defecto: logging.INFO).
 
     Returns:
-        logging.Logger: The configured logger.
+        logging.Logger: El logger configurado.
     """
     logger = logging.getLogger(name)
     logger.setLevel(level)

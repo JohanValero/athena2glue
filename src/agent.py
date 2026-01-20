@@ -31,7 +31,7 @@ def main(sql_path: Path, business_name: str, output_dir: str) -> None:
         sql_path (Path): Ruta al archivo SQL de origen.
         business_name (str): Nombre del negocio o contexto para el script generado.
         output_dir (str): Ruta al directorio de salida para los archivos generados.
-    
+
     Raises:
         FileNotFoundError: Si el archivo SQL no existe.
         Exception: Si ocurre un error inesperado durante la ejecución.

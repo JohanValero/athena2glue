@@ -53,6 +53,14 @@ def apply_date_replacements(sql_text: str, replacements: Dict[str, str]) -> str:
 def convert_syntax(sql_text: str, tables: List[TableSourceInfo], date_replacements: Dict[str, str]) -> str:
     """
     Parsea, limpia tablas, transpila a Spark y aplica reemplazos de fechas.
+
+    Args:
+        sql_text (str): SQL original.
+        tables (List[TableSourceInfo]): Lista de tablas conocidas.
+        date_replacements (Dict[str, str]): Mapa de reemplazos de fechas.
+
+    Returns:
+        str: SQL convertido a dialeco Spark.
     """
     expression = sqlglot.parse_one(sql_text, read=SOURCE_DIALECT)
 

@@ -17,10 +17,11 @@ def extract_final_query_ast(sql_text: str) -> str:
     Parsea el SQL y elimina la cláusula WITH (CTEs) para devolver
     únicamente la consulta principal (Last Select).
 
-    :param sql_text: Texto SQL completo (con CTEs)
-    :type sql_text: str
-    :return: SQL de la consulta principal sin CTEs
-    :rtype: str
+    Args:
+        sql_text (str): Texto SQL completo (con CTEs).
+
+    Returns:
+        str: SQL de la consulta principal sin CTEs.
     """
     parsed: sqlglot.Expression = sqlglot.parse_one(sql_text)
     if "with_" in parsed.args:

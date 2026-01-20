@@ -21,10 +21,12 @@ def extract_ctes_ast(sql_text: str, tables: List[TableSourceInfo]) -> List[CTESo
     """
     Parsea el SQL y extrae las definiciones de CTEs, su contenido y orden.
 
-    :param sql_text: Texto SQL limpio
-    :type sql_text: str
-    :return: Lista de objetos con info de la CTE
-    :rtype: List[CTESourceInfo]
+    Args:
+        sql_text (str): Texto SQL limpio.
+        tables (List[TableSourceInfo]): Lista de tablas conocidas.
+
+    Returns:
+        List[CTESourceInfo]: Lista de objetos con información de las CTEs.
     """
     ctes: List[CTESourceInfo] = []
     parsed: sqlglot.Expression = sqlglot.parse_one(sql_text)

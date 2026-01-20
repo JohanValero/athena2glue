@@ -23,7 +23,19 @@ REGEX_INT = re.compile(r"^\d{8}$")             # 20250101
 
 
 def normalize_date(value: str) -> Optional[datetime]:
-    """Intenta convertir un string a datetime object."""
+    """
+    Intenta convertir un string a datetime object.
+
+    Soporta formatos:
+    - YYYY-MM-DD
+    - YYYYMMDD
+
+    Args:
+        value (str): String de fecha.
+
+    Returns:
+        Optional[datetime]: Objeto datetime si es válido, None si no.
+    """
     try:
         if REGEX_ISO.match(value):
             return datetime.strptime(value, "%Y-%m-%d")

@@ -17,19 +17,19 @@ logger: logging.Logger = setup_logger(__name__)
 def generate_code_node(state: AgentState) -> AgentState:
     """
     Genera código PySpark final usando plantilla.
-    
+
     Acciones:
     - Carga plantilla_glue_job_estandar.py
     - Genera SQLQueryRepository con métodos para cada CTE
     - Genera ViewCreator con orden de CTEs
     - Genera lista de tablas fuente
     - Construye archivo .py completo
-    
+
     Args:
-        state: Estado actual del agente
-        
+        state: Estado actual del agente.
+
     Returns:
-        Estado actualizado con generated_code
+        AgentState: Estado actualizado con generated_code.
     """
     logger.info("Generating code template.")
 

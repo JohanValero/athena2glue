@@ -18,11 +18,18 @@ logger: logging.Logger = logging.getLogger(__name__)
 def create_agent_graph() -> CompiledStateGraph:
     """
     Crea el grafo de LangGraph para el agente de migración.
-    
+
     Flujo:
-    
+    1. parse_sql: Lee y limpia el SQL.
+    2. extract_tables_node: Identifica tablas origen.
+    3. extract_ctes_node: Identifica CTEs.
+    4. extract_last_select_node: Identifica query principal.
+    5. extract_dates_node: Identifica fechas hardcodeadas.
+    6. convert_syntax_node: Transpila a Spark.
+    7. generate_code_node: Genera script final.
+
     Returns:
-        Grafo compilado
+        CompiledStateGraph: El grafo compilado listo para ejecutar.
     """
     logger.info("Creando grafo del agente...")
     graph = StateGraph(AgentState)
