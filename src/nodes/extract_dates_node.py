@@ -13,8 +13,9 @@ from sqlglot import exp
 
 from ..models.agent_state import AgentState
 from ..models.cte_info import CTESourceInfo
+from ..utils.logging_config import setup_logger
 
-logger: logging.Logger = logging.getLogger(__name__)
+logger: logging.Logger = setup_logger(__name__)
 
 # Regex para formatos comunes
 REGEX_ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")  # 2025-01-01

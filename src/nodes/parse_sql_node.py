@@ -8,8 +8,9 @@ from typing import Optional
 
 from ..models.agent_state import AgentState
 from ..utils.sql_parser import SQLParser
+from ..utils.logging_config import setup_logger
 
-logger: logging.Logger = logging.getLogger(__name__)
+logger: logging.Logger = setup_logger(__name__)
 
 def parse_sql_node(state: AgentState) -> AgentState:
     """

@@ -1,0 +1,29 @@
+import logging
+import sys
+
+def setup_logger(name: str = "Athena2Glue", level: int = logging.INFO) -> logging.Logger:
+    """
+    Configures and returns a logger with the specified name and level.
+
+    Args:
+        name (str): The name of the logger.
+        level (int): The logging level (default: logging.INFO).
+
+    Returns:
+        logging.Logger: The configured logger.
+    """
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+
+    if not logger.handlers:
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(level)
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S"
+        )
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        logger.propagate = False
+
+    return logger

@@ -12,8 +12,9 @@ from ..models.table_info import TableSourceInfo
 from ..models.cte_info import CTESourceInfo
 from ..models.agent_state import AgentState
 from ..nodes.extract_tables_node import extract_tables_ast
+from ..utils.logging_config import setup_logger
 
-logger: logging.Logger = logging.getLogger(__name__)
+logger: logging.Logger = setup_logger(__name__)
 
 
 def extract_ctes_ast(sql_text: str, tables: List[TableSourceInfo]) -> List[CTESourceInfo]:

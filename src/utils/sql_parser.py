@@ -5,8 +5,9 @@ Parser de consultas SQL para extraer CTEs y estructura.
 import re
 import logging
 from typing import List, Tuple
+from ..utils.logging_config import setup_logger
 
-logger = logging.getLogger(__name__)
+logger: logging.Logger = setup_logger(__name__)
 
 
 class SQLParser:

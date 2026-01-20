@@ -10,8 +10,9 @@ from sqlglot import exp
 
 from src.models.table_info import TableSourceInfo
 from ..models.agent_state import AgentState
+from ..utils.logging_config import setup_logger
 
-logger: logging.Logger = logging.getLogger(__name__)
+logger: logging.Logger = setup_logger(__name__)
 
 TABLE_CONFIG: Dict = {
     "dwh_thr_modelo_datos.dim_tiempo": Literal["iceberg"],

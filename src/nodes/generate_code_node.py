@@ -9,8 +9,9 @@ from typing import List
 from ..models.cte_info import CTESourceInfo
 from ..models.table_info import TableSourceInfo
 from ..models.agent_state import AgentState
+from ..utils.logging_config import setup_logger
 
-logger: logging.Logger = logging.getLogger(__name__)
+logger: logging.Logger = setup_logger(__name__)
 
 
 def generate_code_node(state: AgentState) -> AgentState:

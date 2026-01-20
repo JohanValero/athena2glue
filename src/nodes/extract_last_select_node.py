@@ -7,8 +7,9 @@ import logging
 import sqlglot
 
 from ..models.agent_state import AgentState
+from ..utils.logging_config import setup_logger
 
-logger: logging.Logger = logging.getLogger(__name__)
+logger: logging.Logger = setup_logger(__name__)
 
 
 def extract_final_query_ast(sql_text: str) -> str:

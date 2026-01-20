@@ -16,14 +16,9 @@ from dotenv import load_dotenv
 
 from .graph import create_agent_graph
 from .models.agent_state import AgentState, create_initial_state
+from .utils.logging_config import setup_logger
 
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
-    handlers=[logging.StreamHandler(sys.stdout)]
-)
-logger: logging.Logger = logging.getLogger(__name__)
+logger: logging.Logger = setup_logger(__name__)
 
 
 def main(sql_path: Path, business_name: str, output_dir: str) -> None:

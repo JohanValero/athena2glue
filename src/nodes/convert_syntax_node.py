@@ -12,11 +12,10 @@ from sqlglot import exp
 from src.models.cte_info import CTESourceInfo
 from src.models.table_info import TableSourceInfo
 from ..models.agent_state import AgentState
-from ..utils.sql2spark_converter import AthenaToSparkConverter
+from ..utils.logging_config import setup_logger
 
 USE_LLM: bool = False
-logger: logging.Logger = logging.getLogger(__name__)
-converter: AthenaToSparkConverter = AthenaToSparkConverter()
+logger: logging.Logger = setup_logger(__name__)
 
 # Athena se basa en Trino/Presto. Usamos "trino" como dialecto de lectura.
 SOURCE_DIALECT: str = "trino"
