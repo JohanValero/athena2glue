@@ -28,7 +28,11 @@ def extract_ctes_ast(sql_text: str) -> List[CTESourceInfo]:
         List[CTESourceInfo]: Lista de objetos con información de las CTEs.
     """
     ctes: List[CTESourceInfo] = []
-    parsed: sqlglot.Expression = sqlglot.parse_one(sql_text)
+    try:
+        parsed: sqlglot.Expression = sqlglot.parse_one(sql_text)
+    except Exception as e:
+        logger.error("Error parsing SQL for CTE extraction: %s", e)
+        raise ValueError(f"CRITICAL: Failed to parse SQL for CTE extraction: {e}") from e
 
     for index, node in enumerate(parsed.find_all(exp.CTE)):
         cte_name = node.alias

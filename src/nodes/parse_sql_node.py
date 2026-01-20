@@ -6,11 +6,13 @@ import logging
 from pathlib import Path
 from typing import Optional
 
+from src.config import DEFAULT_SQL_ENCODING
 from ..models.agent_state import AgentState
 from ..utils.sql_parser import SQLParser
 from ..utils.logging_config import setup_logger
 
 logger: logging.Logger = setup_logger(__name__)
+
 
 def parse_sql_node(state: AgentState) -> AgentState:
     """
@@ -27,19 +29,35 @@ def parse_sql_node(state: AgentState) -> AgentState:
 
     Returns:
         Estado actualizado con raw_sql y cleaned_sql
+
+    Raises:
+        ValueError: Si el path del archivo SQL no es válido.
+        FileNotFoundError: Si el archivo no existe.
+        IOError: Si hay errores de lectura.
     """
-    sql_file_path: Optional[str] = state.get('sql_file_path', '')
+    sql_file_path: Optional[str] = state.get('sql_file_path')
+    
+    if not sql_file_path:
+        error_msg = "La ruta del archivo SQL no está definida en el estado."
+        logger.error(error_msg)
+        raise ValueError(error_msg)
+
     sql_path: Path = Path(sql_file_path)
+    logger.info("Leyendo SQL: %s", sql_path)
 
-    logger.info("Leyendo SQL: %s", sql_file_path)
+    if not sql_path.exists():
+        error_msg = f"El archivo SQL no existe: {sql_path}"
+        logger.error(error_msg)
+        raise FileNotFoundError(error_msg)
 
-    # TODO Verificar que la variable no sea nula.
-    # TODO Verificar que el archivo exista.
-    # TODO Capturar error de lectura.
-
-    with open(sql_path, 'r', encoding='utf-8') as f:
-        raw_sql: str = f.read()
-        logger.info("Archivo leído: %s (%s caracteres)", sql_path.name, len(raw_sql))
+    try:
+        with open(sql_path, 'r', encoding=DEFAULT_SQL_ENCODING) as f:
+            raw_sql: str = f.read()
+            logger.info("Archivo leído: %s (%s caracteres)", sql_path.name, len(raw_sql))
+    except Exception as e:
+        error_msg = f"Error leyendo el archivo SQL {sql_path}: {e}"
+        logger.error(error_msg)
+        raise IOError(error_msg) from e
 
     parser: SQLParser = SQLParser()
     cleaned_sql: str = parser.clean_sql(raw_sql)

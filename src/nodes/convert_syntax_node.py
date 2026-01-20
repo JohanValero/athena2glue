@@ -5,21 +5,16 @@ Nodo para convertir sintaxis Athena SQL a Spark SQL.
 import logging
 from typing import Dict, List, Optional, Tuple
 
-#import textwrap
 import sqlglot
 from sqlglot import exp
 
 from src.models.cte_info import CTESourceInfo
 from src.models.table_info import TableSourceInfo
+from src.config import SOURCE_DIALECT, TARGET_DIALECT, USE_LLM
 from ..models.agent_state import AgentState
 from ..utils.logging_config import setup_logger
 
-USE_LLM: bool = False
 logger: logging.Logger = setup_logger(__name__)
-
-# Athena se basa en Trino/Presto. Usamos "trino" como dialecto de lectura.
-SOURCE_DIALECT: str = "trino"
-TARGET_DIALECT: str = "spark"
 
 
 def clean_table_reference(node: exp.Table, known_tables: List[TableSourceInfo]) -> None:

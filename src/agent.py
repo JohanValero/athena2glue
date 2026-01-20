@@ -10,10 +10,11 @@ import argparse
 import logging
 import sys
 import traceback
-
 from pathlib import Path
+
 from dotenv import load_dotenv
 
+from .config import DEFAULT_OUTPUT_DIR
 from .graph import create_agent_graph
 from .models.agent_state import AgentState, create_initial_state
 from .utils.logging_config import setup_logger
@@ -93,8 +94,8 @@ def cli() -> None:
     parser.add_argument(
         "--output-dir",
         type=str,
-        default="./output",
-        help="Directorio donde se guardará el script Python generado. Default: ./output"
+        default=DEFAULT_OUTPUT_DIR,
+        help=f"Directorio donde se guardará el script Python generado. Default: {DEFAULT_OUTPUT_DIR}"
     )
 
     parser.add_argument(

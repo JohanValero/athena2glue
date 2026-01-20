@@ -3,23 +3,18 @@ Nodo para extraer tablas del SQL.
 """
 
 import logging
-from typing import Dict, List, Literal
+from typing import Dict, List, Literal, Optional
 
 import sqlglot
 from sqlglot import exp
 
 from src.models.table_info import TableSourceInfo
+from src.config import TABLE_CONFIG
 from ..models.agent_state import AgentState
 from ..utils.logging_config import setup_logger
 
 logger: logging.Logger = setup_logger(__name__)
 
-TABLE_CONFIG: Dict = {
-    "dwh_thr_modelo_datos.dim_tiempo": Literal["iceberg"],
-    "dwh_thr_reportes.fct_saldos_semanal_detallado": Literal["iceberg"],
-    "stg_cap.stg_segmentacion_saldos_trad": Literal["iceberg"],
-    "stg_cap.stg_segmentacion_saldos_pib": Literal["iceberg"]
-}
 
 def extract_tables_ast(sql_text: str) -> List[TableSourceInfo]:
     """
@@ -32,7 +27,13 @@ def extract_tables_ast(sql_text: str) -> List[TableSourceInfo]:
         List[TableSourceInfo]: Lista de objetos TableSourceInfo con la información de las tablas.
     """
     tables: List[TableSourceInfo] = []
-    parsed: sqlglot.Expression = sqlglot.parse_one(sql_text)
+    try:
+        parsed: sqlglot.Expression = sqlglot.parse_one(sql_text)
+    except Exception as e:
+        logger.error("Error parsing SQL for table extraction: %s", e)
+        # Return empty or re-raise? Since this is critical, we might want to fail or return empty if tolerable.
+        # Returning empty might cause downstream issues. Raising is safer for "cases of exceptions".
+        raise ValueError(f"CRITICAL: Failed to parse SQL for table extraction: {e}") from e
 
     for node in parsed.find_all(exp.Table):
         table_name: str = node.name
@@ -41,13 +42,16 @@ def extract_tables_ast(sql_text: str) -> List[TableSourceInfo]:
 
         if schema_name and table_name not in [t.table for t in tables]:
             full_name: str = f"{schema_name}.{table_name}"
+            # Usa "unknown" como string literal, no el tipo Literal
+            table_type = TABLE_CONFIG.get(full_name, "unknown")
+            
             table_info: TableSourceInfo = TableSourceInfo(
                 full_name,
                 "glue_catalog" if full_name in TABLE_CONFIG else "spark_catalog",
                 catalog_name,
                 schema_name,
                 table_name,
-                TABLE_CONFIG.get(full_name, Literal["unknown"]),
+                table_type,
                 f"tbl_{table_name} = self._get_table('{table_name}')",
                 f"tlb_{table_name}"
             )
