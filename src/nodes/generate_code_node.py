@@ -64,7 +64,7 @@ def generate_code_node(state: AgentState) -> AgentState:
     list_cte_create: List[str] = [cte.python_create for cte in ctes]
 
     code_template = code_template.replace("#SETI_TAG_LISTA_TABLAS", list_table)
-    code_template = code_template.replace("#SETI_TAG_METHODS_QUERY_REPLACE", "\n        ".join(list_cte_methods))
+    code_template = code_template.replace("#SETI_TAG_METHODS_QUERY_REPLACE", "\n".join(list_cte_methods))
     code_template = code_template.replace("#SETI_TAG_CREATE_VIEWS", "\n        ".join(list_cte_create))
     code_template = code_template.replace("#SETI_TAG_FINAL_TABLES", main_tables)
     code_template = code_template.replace("#SETI_TAG_F_STRING_FINAL_QUERY", main_select)

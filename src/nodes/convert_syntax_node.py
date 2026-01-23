@@ -10,7 +10,7 @@ from sqlglot import exp
 
 from src.models.cte_info import CTESourceInfo
 from src.models.table_info import TableSourceInfo
-from src.config import SOURCE_DIALECT, TARGET_DIALECT, USE_LLM
+from src.config import SOURCE_DIALECT, TARGET_DIALECT
 from ..models.agent_state import AgentState
 from ..utils.logging_config import setup_logger
 
@@ -64,12 +64,11 @@ def convert_syntax(sql_text: str, tables: List[TableSourceInfo], date_replacemen
         clean_table_reference(node, tables)
 
     # 2. Transpilación a Spark
-    converted_sql = expression.sql(dialect=TARGET_DIALECT, pretty=False)
+    converted_sql = expression.sql(dialect=TARGET_DIALECT, pretty=True)
 
     # 3. Inyección de variables de Tablas (f-strings)
     for tb in tables:
-        converted_sql = converted_sql.replace(
-            tb.table, '{' + f'{tb.python_var}' + '}')
+        converted_sql = converted_sql.replace(tb.table, '{' + f'{tb.python_var}' + '}')
 
     # 4. Inyección de variables de Fechas (f-strings)
     # Esto inyecta inicialmente "{time_config.fecha_corte...}"
@@ -94,15 +93,13 @@ def configure_method_params(sql_text: str) -> Tuple[str, str, str]:
     # El placeholder viene de extract_dates_node como "{time_config.fecha_corte_iso}"
     if "{time_config.fecha_corte_iso}" in adjusted_sql:
         # Cambiamos la referencia de objeto a variable local para el método
-        adjusted_sql = adjusted_sql.replace(
-            "{time_config.fecha_corte_iso}", "{fecha_corte_iso}")
+        adjusted_sql = adjusted_sql.replace("{time_config.fecha_corte_iso}", "'{fecha_corte_iso}'")
         args_def_list.append("fecha_corte_iso: str")
         args_call_list.append("self.time_config.fecha_corte_iso")
 
     # Detectar y procesar fecha_corte (entero/compacto)
     elif "{time_config.fecha_corte}" in adjusted_sql:
-        adjusted_sql = adjusted_sql.replace(
-            "{time_config.fecha_corte}", "{fecha_corte}")
+        adjusted_sql = adjusted_sql.replace("{time_config.fecha_corte}", "{fecha_corte}")
         args_def_list.append("fecha_corte: str")
         args_call_list.append("self.time_config.fecha_corte")
 
@@ -127,8 +124,7 @@ def convert_syntax_node(state: AgentState) -> AgentState:
     # Procesar CTEs
     for cte in ctes:
         # 1. Conversión base
-        temp_sql = convert_syntax(
-            cte.inner_sql, tables=cte.tables, date_replacements=date_replacements)
+        temp_sql = convert_syntax(cte.inner_sql, tables=cte.tables, date_replacements=date_replacements)
 
         # 2. Configuración de parámetros dinámicos
         final_sql, args_def, args_call = configure_method_params(temp_sql)
@@ -136,17 +132,19 @@ def convert_syntax_node(state: AgentState) -> AgentState:
 
         table_vars: str = "\n        ".join(
             [f'{tb.python_var} = self._get_table("{tb.table}")' for tb in cte.tables])
+        if len(table_vars) > 0:
+            table_vars: str = f"\n        {table_vars}"
 
+        new_sql: str = cte.new_sql.replace('\n', '\n        ')
         # 3. Construcción del método Python con firma dinámica
         cte.python_method = f"""
     def get_cte_{cte.name}({args_def}) -> str:
         \"\"\"
         Descripción: Vista autogenerada en migración
         Vista resultado: {cte.name}
-        \"\"\"
-        {table_vars}
+        \"\"\"{table_vars}
         return f\"\"\"
-        {cte.new_sql}
+        {new_sql}
         \"\"\""""
 
         # 4. Construcción de la llamada con argumentos dinámicos
